@@ -19,11 +19,11 @@ export default class App extends Component {
   RecuperarDados = () => {
     this.setState({carregando: true})
     try {
-      const lista = require('./src/DigiDB/DigimonList.json')
+      const lista = require('./src/DigiDB/Digimon.json')
       console.log(lista);
       this.setState({ dados: lista })
-    } catch (erro) {
-      console.log(erro)
+    } catch (error) {
+      console.error(error)
     } finally {
       this.setState({carregando: false})
     }    
@@ -48,7 +48,10 @@ export default class App extends Component {
   render() {
     return(
       <View style={ style.container }>
-        <Text style={ style.title }>Digivice</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Image source={require('./src/Images/digivice.png')} style={ style.logo } />
+          <Text style={ style.title }>Digivice</Text>
+        </View>
         <Text style={ style.subtitle }>Resultados encontrados: {this.state.dadosFiltrados && this.state.dadosFiltrados.length > 0 ? this.state.dadosFiltrados.length : this.state.dados.length}</Text> 
         <TextInput 
           style={{width: 200}} 
@@ -56,21 +59,16 @@ export default class App extends Component {
           inlineImageLeft='search'
           inlineImagePadding={10}
           placeholder='Pesquisar...' />
-        <ImageBackground 
-          source={require('./src/Images/background.png')} 
-          resizeMode="cover" style={style.image}
-        >
+ 
         {this.state.carregando ? <ActivityIndicator size="large" color="#0000ff" /> : 
           <FlatList 
             data={this.state.dadosFiltrados && this.state.dadosFiltrados.length > 0 ? this.state.dadosFiltrados : this.state.dados}
             renderItem={ Digimon }
-            key={item => item.name }
+            key={item => item.Number }
             numColumns={2}
-            
+            maxToRenderPerBatch={6}
           />
         }
-
-        </ImageBackground>
       </View>
     )
   }
@@ -84,6 +82,9 @@ const style = StyleSheet.create({
     fontSize: 24, 
     margin: 4, 
     color: 'black'
+  },
+  logo: {
+    width: 35, height: 35, margin: 5
   },
   subtitle: {
     margin: 4
